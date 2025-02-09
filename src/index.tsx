@@ -74,7 +74,8 @@ export function apply(ctx: Context) {
       const targetGroups = groups.map(g => g.toString().trim())
 
       try {
-        const { element, page } = await getNoticeBoard()
+        const { element: noticeEl, page: noticePage } = await getNoticeBoard()
+        const { element: helpEl, page: helpPage } = await getHelpMenu()
 
         // 遍历所有机器人实例
         // for (const bot of ctx.bots) {
@@ -90,14 +91,15 @@ export function apply(ctx: Context) {
             }
 
             // 发送消息
-            await session.bot.sendMessage(groupId, element)
+            await session.bot.sendMessage(groupId, helpEl)
+            await session.bot.sendMessage(groupId, noticeEl)
             session.send(`已向群 ${groupId} 发送测试消息`)
           } catch (error) {
             session.send(`[错误] 群 ${groupId} 消息发送失败: ${error.message}`)
           }
         }
-        // }
-        await page.close() // Puppeteer 不会主动结束渲染进程，需要手动关闭
+        await helpPage.close()
+        await noticePage.close()
 
         return '所有消息已尝试发送'
       } catch (error) {
