@@ -60,11 +60,11 @@ export function apply(ctx: Context) {
   ctx.command("发送公告 <groups:text>")
     .usage("发送公告 群号1 群号2...")
     .example("发送公告 123456 654321")
-    .action(async ({ session }, ...groups) => {
+    .action(async ({ session }, groupsString) => {
 
       const broadcasters = ["Alice", "1299089125", "1748421646", "2862145720"]
       if (!broadcasters.includes(session.userId)) return
-
+      const groups = groupsString.split(" ")
       // 参数校验
       if (!groups || groups.length === 0) {
         return "请至少提供一个群号参数，多个群号用空格分隔"
@@ -81,6 +81,8 @@ export function apply(ctx: Context) {
         // 遍历目标群组
         for (const groupId of targetGroups) {
           try {
+            console.log("groupId", groupId)
+            console.log("targetGroups", targetGroups)
             // 验证群号格式
             if (!/^\d+$/.test(groupId)) {
               session.send(`[格式错误] ${groupId} 不是有效的群号`)
