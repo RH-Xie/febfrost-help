@@ -1,5 +1,5 @@
 {
-  "name": "@febfrost/koishi-plugin-help",
+  "name": "koishi-plugin-febfrost-help",
   "description": "帮助菜单",
   "version": "0.0.1",
   "main": "lib/index.js",
@@ -9,13 +9,11 @@
     "dist"
   ],
   "license": "MIT",
-  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
     "plugin"
   ],
-  "devDependencies": {},
   "peerDependencies": {
     "koishi": "^4.17.11"
   }
