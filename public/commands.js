@@ -160,12 +160,19 @@ const commands = [
       "subCommands": []
   },
   {
-      "command": "@白面鸮 邀请加群 群id [开启视频解析=true] [方舟订阅=false] [每日干员=false]",
-      "description": "发起审核邀请白咕咕加群。默认参数：视频解析 开，方舟订阅 关，每日干员推送 关。如：@白咕咕 邀请加群 114514 false true true → 群号114514，关闭视频解析，打开方舟订阅和每日干员推送。",
-      "subCommands": []
-  },
+      "command": "邀请加群",
+      "description": "提供了 ①命令加群②邮件加群 两种方式",
+      "subCommands": [
+        {
+            "command": "@白面鸮 邀请加群 群id [开启视频解析=1] [方舟订阅=0] [每日干员=0]",
+            "description": "发起审核邀请白咕咕加群。默认参数：视频解析 开，方舟订阅 关，每日干员推送 关。如：@白咕咕 邀请加群 114514 false true true → 群号114514，关闭视频解析，打开方舟订阅和每日干员推送。",        },
+        {
+            "command": "@白面鸮 邮件",
+            "description": "返回邮件，需手动发邮件到 ptilopsis.rhineng@gmail.com（以此命令返回的邮箱为准），标题为“咕咕加群”，内容格式可参考 [开启视频解析=1] [方舟订阅=0] [每日干员=0]。(有其他需求可自行添加)"
+        }
+    ]  },
   {
-      "command": "@白面鸮 查看公告（开发中）",
+      "command": "@白面鸮 查看公告",
       "description": "查看公告和更新日志",
       "subCommands": []
   },

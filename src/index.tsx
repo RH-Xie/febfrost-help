@@ -59,12 +59,15 @@ export function apply(ctx: Context) {
     await page.close() // Puppeteer 不会主动结束渲染进程，需要手动关闭
   })
 
-  ctx.command("公告").action(async ({ session }) => {
+  ctx.command("公告").alias("日志", "更新").action(async ({ session }) => {
     const { element, page } = await getNoticeBoard()
     const resp = await session.send(element)
     await page.close() // Puppeteer 不会主动结束渲染进程，需要手动关闭
   })
 
+  ctx.command("邮件").alias("加群邮件", "获取邮件").action(async ({ session }) => {
+    await session.send(`ptilopsis.rhineng@gmail.com`)
+  })
 
   ctx.command("发送公告 <groups:text>")
     .usage("发送公告 群号1 群号2...")
