@@ -8,6 +8,15 @@ export interface Config { }
 
 export const Config: Schema<Config> = Schema.object({})
 
+const INTERVAL_PER_GROUP = 10000
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+const stopToWait = async () => {
+  const randomInterval = Math.min(INTERVAL_PER_GROUP * 0.5, 4000) * (0.5 - Math.random())
+  await sleep(INTERVAL_PER_GROUP + randomInterval)
+}
+
 export function apply(ctx: Context) {
   async function getHelpMenu() {
     const page = await ctx.puppeteer.page();
@@ -76,14 +85,10 @@ export function apply(ctx: Context) {
       try {
         const { element: noticeEl, page: noticePage } = await getNoticeBoard()
         const { element: helpEl, page: helpPage } = await getHelpMenu()
-
-        // 遍历所有机器人实例
-        // for (const bot of ctx.bots) {
+        session.send(`开始发送消息，预计需要${Math.ceil(targetGroups.length * INTERVAL_PER_GROUP / 60)}分钟`)
         // 遍历目标群组
         for (const groupId of targetGroups) {
           try {
-            console.log("groupId", groupId)
-            console.log("targetGroups", targetGroups)
             // 验证群号格式
             if (!/^\d+$/.test(groupId)) {
               session.send(`[格式错误] ${groupId} 不是有效的群号`)
@@ -94,6 +99,8 @@ export function apply(ctx: Context) {
             await session.bot.sendMessage(groupId, helpEl)
             await session.bot.sendMessage(groupId, noticeEl)
             session.send(`已向群 ${groupId} 发送测试消息`)
+            // 等待
+            await stopToWait()
           } catch (error) {
             session.send(`[错误] 群 ${groupId} 消息发送失败: ${error.message}`)
           }
@@ -106,4 +113,16 @@ export function apply(ctx: Context) {
         return `命令执行失败: ${error.message}`
       }
     })
+
+  ctx.on('guild-member-added', async (session) => {
+    // 检查是否是机器人自己加入群聊
+    if (session.userId === session.bot.selfId) {
+      console.log("加入群组", session.guildId)
+      const { element, page } = await getHelpMenu()
+      await session.send(`Hello, 白面鸮为您服务~\n"@白面鸮 菜单"可以查看以下菜单`)
+      await session.send(element)
+      await page.close()
+    }
+  })
+
 }
