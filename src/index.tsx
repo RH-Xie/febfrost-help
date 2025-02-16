@@ -59,15 +59,13 @@ export function apply(ctx: Context) {
     await page.close() // Puppeteer 不会主动结束渲染进程，需要手动关闭
   })
 
-  ctx.command("公告").alias("日志", "更新").action(async ({ session }) => {
+  ctx.command("公告").action(async ({ session }) => {
+    console.log("配置 >>>", ctx.root.config)
     const { element, page } = await getNoticeBoard()
     const resp = await session.send(element)
     await page.close() // Puppeteer 不会主动结束渲染进程，需要手动关闭
   })
 
-  ctx.command("邮件").alias("加群邮件", "获取邮件").action(async ({ session }) => {
-    await session.send(`ptilopsis.rhineng@gmail.com`)
-  })
 
   ctx.command("发送公告 <groups:text>")
     .usage("发送公告 群号1 群号2...")
@@ -117,8 +115,17 @@ export function apply(ctx: Context) {
       }
     })
 
+  ctx.on("guild-added", async (session) => {
+    console.log("加入群组 guild-added", session.guildId)
+    const { element, page } = await getHelpMenu()
+    await session.send(`Hello, 白面鸮为您服务~\n"@白面鸮 菜单"可以查看以下菜单`)
+    await session.send(element)
+    await page.close()
+  })
+
   ctx.on('guild-member-added', async (session) => {
     // 检查是否是机器人自己加入群聊
+    console.log("加入群组 guild-member-added", session.guildId)
     if (session.userId === session.bot.selfId) {
       console.log("加入群组", session.guildId)
       const { element, page } = await getHelpMenu()
